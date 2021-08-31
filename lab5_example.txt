@@ -1,0 +1,4 @@
+[n(cough),n(infection),pneumonia]
+[n(temp_gt_38),fever]
+[n(muscle_pain),flu]
+[n(sick_2days),n(fever),infection]
