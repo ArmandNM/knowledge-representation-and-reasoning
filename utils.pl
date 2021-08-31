@@ -15,6 +15,11 @@ negation(X, NotX):-
     term_to_atom(NotX, NotXAtom),
     !.
 
+is_atom_negated(Atom):-
+    term_to_atom(Atom, XAtom),
+    atom_chars(XAtom, XChars),
+    is_negated(XChars).
+
 is_negated([FirstChar, SecondChar | RestChars]):-
     FirstChar == 'n',
     SecondChar == '(',
