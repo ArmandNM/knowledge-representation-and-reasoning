@@ -1,3 +1,6 @@
+:- consult(sld_derivations).
+
+
 % Temperature
 patient_temperature_to_literal(Temperature, TemperatureLiteral):-
     Temperature > 38,
@@ -38,6 +41,13 @@ patient_cough_to_literal(Cough, CoughLiteral):-
 % Interactive Console 
 main:-
     repeat,
+    PriorKB = [[n(cough),n(infection),pneumonia],
+               [n(temp_gt_38),fever],
+               [n(muscle_pain),n(fever),flu],
+               [n(sick_2days),n(fever),infection]],
+
+    write('PriorKB: '), write(PriorKB), nl,
+
     write('\nHola\n\n'),
     write('What is patient temperature?\n'),
     read(Temperature), nl,
@@ -59,6 +69,15 @@ main:-
     write('SickDays: '), write(SickDaysLiteral), nl,
     write('MusclePain: '), write(MusclePainLiteral), nl,
     write('Cough: '), write(CoughLiteral), nl,
+
+    sort([TemperatureLiteral, SickDaysLiteral,MusclePainLiteral, CoughLiteral], PatientKBWithEmptyClauses),
+    delete(PatientKBWithEmptyClauses, [], PatientKB),
+    append(PriorKB, PatientKB, KB),
+    Questions = [pneumonia],
+
+    write('KB '), write(KB), nl, nl,
+
+    (solve(KB, Questions) -> write('Pneumonia: YES\n') ; write('Pneumonia: NO\n') ),
 
     write('\nLook at another patient?\n'),
     read(AnotherPatient),
