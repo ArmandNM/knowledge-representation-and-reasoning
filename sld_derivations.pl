@@ -1,6 +1,6 @@
 :- consult(utils).
 
-main:-
+main_sld_backwards:-
     open('C:\\Master\\KRR\\krr\\test.txt', read, InputFile),
     read(InputFile, Clauses),
     read(InputFile, Questions),
