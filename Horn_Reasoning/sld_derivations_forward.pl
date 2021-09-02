@@ -1,4 +1,4 @@
-:- consult(utils).
+:- consult('..\\utils.pl').
 
 main:-
     open('C:\\Master\\KRR\\krr\\test.txt', read, InputFile),

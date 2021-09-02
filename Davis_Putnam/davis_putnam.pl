@@ -1,7 +1,7 @@
-:- consult(utils).
+:- consult('..\\utils.pl').
 
 main:-
-    open('C:\\Master\\KRR\\krr\\clauses.txt', read, InputFile),
+    open('C:\\Master\\KRR\\krr\\Davis_Putnam\\test2_dp.txt', read, InputFile),
     read(InputFile, Clauses),
     close(InputFile),
     sort(Clauses, KB),
