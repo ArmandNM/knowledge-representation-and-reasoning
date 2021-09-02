@@ -1,85 +1,86 @@
 :- consult(sld_derivations).
 
 
-% Temperature
-patient_temperature_to_literal(Temperature, TemperatureLiteral):-
-    Temperature > 38,
-    TemperatureLiteral = [temp_gt_38].
+% Reads
+student_reads_to_literal(Reads, ReadsLiteral):-
+    Reads > 8,
+    ReadsLiteral = [reads_more_than_8_hours].
 
-patient_temperature_to_literal(Temperature, TemperatureLiteral):-
-    Temperature =< 38,
-    TemperatureLiteral = [].
+student_reads_to_literal(Reads, ReadsLiteral):-
+    Reads =< 8,
+    ReadsLiteral = [].
 
-% Sick days
-patient_sick_days_to_literal(SickDays, SickDaysLiteral):-
-    SickDays >= 2,
-    SickDaysLiteral = [sick_2days].
+% Smart
+student_smart_to_literal(Smart, SmartLiteral):-
+    Smart = yes,
+    SmartLiteral = [smart].
 
-patient_sick_days_to_literal(SickDays, SickDaysLiteral):-
-    SickDays < 2,
-    SickDaysLiteral = [].
+student_smart_to_literal(Smart, SmartLiteral):-
+    Smart = no,
+    SmartLiteral = [].
 
-% Muscle pain
-patient_muscle_pain_to_literal(MusclePain, MusclePainLiteral):-
-    MusclePain = yes,
-    MusclePainLiteral = [muscle_pain].
+% Parties
+student_parties_to_literal(Parties, PartiesLiteral):-
+    Parties = yes,
+    PartiesLiteral = [likes_parties].
 
-patient_muscle_pain_to_literal(MusclePain, MusclePainLiteral):-
-    MusclePain = no,
-    MusclePainLiteral = [].
+student_parties_to_literal(Parties, PartiesLiteral):-
+    Parties = no,
+    PartiesLiteral = [].
 
-% Cough
-patient_cough_to_literal(Cough, CoughLiteral):-
-    Cough = yes,
-    CoughLiteral = [cough].
+% Contests
+student_contsts_to_literal(Contests, ContestsLiteral):-
+    Contests = yes,
+    ContestsLiteral = [participates_contests].
 
-patient_cough_to_literal(Cough, CoughLiteral):-
-    Cough = no,
-    CoughLiteral = [].
+student_contsts_to_literal(Contests, ContestsLiteral):-
+    Contests = no,
+    ContestsLiteral = [].
 
 
 % Interactive Console 
 main:-
     repeat,
-    PriorKB = [[n(cough),n(infection),pneumonia],
-               [n(temp_gt_38),fever],
-               [n(muscle_pain),n(fever),flu],
-               [n(sick_2days),n(fever),infection]],
+
+    PriorKB = [[n(reads_more_than_8_hours), motivated],
+               [n(smart), n(motivated), good_grades],
+               [n(likes_parties), n(motivated), drop_school],
+               [n(good_grades), n(participates_contests), receive_awards]],
 
     write('PriorKB: '), write(PriorKB), nl,
 
     write('\nHola\n\n'),
-    write('What is patient temperature?\n'),
-    read(Temperature), nl,
-    patient_temperature_to_literal(Temperature, TemperatureLiteral),
+    write('How many hours does the student read daily?\n'),
+    read(Reads), nl,
+    student_reads_to_literal(Reads, ReadsLiteral),
 
-    write('For how many days has the patient been sick?\n'),
-    read(SickDays), nl,
-    patient_sick_days_to_literal(SickDays, SickDaysLiteral),
+    write('Is the student smart?\n'),
+    read(Smart), nl,
+    student_smart_to_literal(Smart, SmartLiteral),
 
-    write('Has patient muscle pain?\n'),
-    read(MusclePain), nl,
-    patient_muscle_pain_to_literal(MusclePain, MusclePainLiteral),
+    write('Does the student like parties?\n'),
+    read(Parties), nl,
+    student_parties_to_literal(Parties, PartiesLiteral),
 
-    write('Has patient cough?\n'),
-    read(Cough), nl,
-    patient_cough_to_literal(Cough, CoughLiteral),
+    write('Does the student participate in contests?\n'),
+    read(Contests), nl,
+    student_contsts_to_literal(Contests, ContestsLiteral),
 
-    write('Temperature: '), write(TemperatureLiteral), nl,
-    write('SickDays: '), write(SickDaysLiteral), nl,
-    write('MusclePain: '), write(MusclePainLiteral), nl,
-    write('Cough: '), write(CoughLiteral), nl,
+    write('Reads: '), write(ReadsLiteral), nl,
+    write('Smart: '), write(SmartLiteral), nl,
+    write('Parties: '), write(PartiesLiteral), nl,
+    write('Contests: '), write(ContestsLiteral), nl,
 
-    sort([TemperatureLiteral, SickDaysLiteral,MusclePainLiteral, CoughLiteral], PatientKBWithEmptyClauses),
-    delete(PatientKBWithEmptyClauses, [], PatientKB),
-    append(PriorKB, PatientKB, KB),
-    Questions = [pneumonia],
+    sort([ReadsLiteral, SmartLiteral, PartiesLiteral, ContestsLiteral], StudentKBWithEmptyClauses),
+    delete(StudentKBWithEmptyClauses, [], StudentKB),
+    append(PriorKB, StudentKB, KB),
+    Questions = [receive_awards],
 
     write('KB '), write(KB), nl, nl,
 
-    (solve(KB, Questions) -> write('Pneumonia: YES\n') ; write('Pneumonia: NO\n') ),
+    (solve(KB, Questions) -> write('Awards: YES\n') ; write('Awards: NO\n') ),
 
-    write('\nLook at another patient?\n'),
-    read(AnotherPatient),
-    AnotherPatient = stop,
+    write('\nLook at another student?\n'),
+    read(AnotherStudent),
+    AnotherStudent = stop,
     !.
