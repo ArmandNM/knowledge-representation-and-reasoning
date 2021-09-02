@@ -62,7 +62,7 @@ davis_putnam(Clauses, SAT, Values):-
     % write('lit: '), write(FirstAtom), write('\n'),
     eliminate(Clauses, FirstAtom, ResultingClauses1),
     davis_putnam(ResultingClauses1, SAT1, Values1),
-    (ResSAT = 'YES' -> SAT = 'YES', append([[FirstAtom, 'true']], Values1, Values), !;
+    (SAT1 = 'YES' -> SAT = 'YES', append([[FirstAtom, 'true']], Values1, Values), !;
                        negation(FirstAtom, NotFirstAtom),
                        eliminate(Clauses, NotFirstAtom, ResultingClauses2),
                        davis_putnam(ResultingClauses2, SAT, Values2),
