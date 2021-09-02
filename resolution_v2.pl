@@ -1,7 +1,7 @@
 :- consult(utils).
 
 main:-
-    open('clauses.txt', read, InputFile),
+    open('C:\\Master\\KRR\\krr\\clauses.txt', read, InputFile),
     read(InputFile, Clauses),
     close(InputFile),
     sort(Clauses, KB),
