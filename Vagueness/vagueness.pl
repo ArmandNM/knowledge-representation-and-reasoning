@@ -1,22 +1,23 @@
 main:-
     repeat,
 
-    open('C:\\Master\\KRR\\krr\\rules.txt', read, InputFile),
+    open('C:\\Master\\KRR\\krr\\Vagueness\\rules.txt', read, InputFile),
     read(InputFile, Rules),
     close(InputFile),
 
-    [FirstRule | _] = Rules,
-    % [Connector | [[Premise1, Premise2], [Conclusion]]] = FirstRule,
+    % Curves = [[service, poor, [5, 4, 3, 2, 1, 0, 0, 0, 0, 0]],
 
-    Curves = [[service, poor, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+
+    Curves = [[service, poor, [3, 2, 1, 4, 5, 6, 7, 8, 9, 10]],
               [service, good, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
               [service, excellent, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
               
-              [food, rancid, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
-              [food, delicious, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+              [food, rancid, [1, 2, 3, 4, 5, 6, 11, 8, 9, 10]],
+              [food, ok, [1, 2, 3, 4, 5, 6, 11, 8, 9, 10]],
+              [food, delicious, [1, 2, 3, 4, 5, 6, 5, 8, 9, 10]],
               
-              [tip, stingy, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]],
-              [tip, normal, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 50, 13]],
+              [tip, stingy, [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]],
+              [tip, normal, [1, 20, 3, 4, 5, 6, 7, 8, 9, 10, 11, 50, 13]],
               [tip, generous, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]]],
 
     write('\nHola! Please leave a review!\n\n'),
@@ -29,17 +30,7 @@ main:-
     read(FoodRatingPlus1), nl,
     FoodRating is FoodRatingPlus1 - 1,
 
-    % get_value(tip, normal, Curves, 11, YValue),
-    % write('Value: '), write(YValue), nl, nl,
-
-    % write(Connector), nl,
-    % write(Premise1), nl,
-    % write(Premise2), nl,
-    % write(Conclusion), nl.
-
     solve(ServiceRating, FoodRating, Curves, Rules, TipPercentage).
-    % rule_to_combined_curve(ServiceRating, FoodRating, FirstRule, Curves, CombinedCurve),
-    % write(CombinedCurve).
 
 
 get_values(Attribute, Category, Curves, CurveValues):-
@@ -73,10 +64,28 @@ rule_to_combined_curve(ServiceRating, FoodRating, Rule, Curves, CombinedCurve):-
     get_values(AttributeConc, CategoryConc, Curves, ConcCurveValues),
     maplist({Level}/[In, Out]>>min_list([Level, In], Out), ConcCurveValues, CombinedCurve).
 
- 
+get_minus_inf_list(N, MinInfList)  :- 
+    length(MinInfList, N), 
+    maplist(=(-1000), MinInfList).
+
+get_max_of_pair(Pair, Result):-
+    -(Elem1, Elem2) = Pair,
+    max_list([Elem1, Elem2], Result).
+
+get_max_each_element(List1, List2, MaxList):-
+    pairs_keys_values(ZippedList, List1, List2),
+    maplist([In, Out]>>get_max_of_pair(In, Out), ZippedList, MaxList).
 
 solve(ServiceRating, FoodRating, Curves, Rules, TipPercentage):-
-    % maplist()
     maplist({ServiceRating, FoodRating, Curves}/[In, Out]>>rule_to_combined_curve(ServiceRating, FoodRating, In, Curves, Out), Rules, CombinedCurves),
     nl, nl, nl, write(CombinedCurves), nl, nl, nl,
+
+    [FirstCurve|_] = CombinedCurves,
+    length(FirstCurve, N), 
+    get_minus_inf_list(N, MinInfList),
+
+    foldl(get_max_each_element, CombinedCurves, MinInfList, AggregatedCurves),
+
+    nl, nl, nl, write(AggregatedCurves), nl, nl,
+
     TipPercentage = 1.

@@ -1,2 +1,0 @@
-[[toddler],[n(toddler),child],[n(child),n(male),boy],[n(infant),child],[n(child),n(female),girl],[female]].
-[girl].
